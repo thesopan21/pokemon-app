@@ -67,7 +67,7 @@ const PokemonDetailScreen = React.forwardRef<View, PokemonDetailScreenProps>(
     }
 
     return (
-      <SafeAreaView style={[styles.container, { ref }]}>
+      <SafeAreaView ref={ref} style={[styles.container]}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.content}

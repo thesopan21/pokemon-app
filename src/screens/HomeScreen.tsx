@@ -5,7 +5,7 @@
 
 import { useGetPokemonByTypeQuery } from '@/api/pokemonByTypeSlice';
 import { useGetPokemonListQuery } from '@/api/pokemonListSlice';
-import { PokemonGridCard, PokemonListCard, SearchInput, SkeletonGrid, SkeletonList } from '@/components';
+import { PokemonGridCard, PokemonListCard, SearchInput, SkeletonList } from '@/components';
 import { PAGINATION } from '@/constants/config';
 import { useDebounce } from '@/hooks';
 import { COLORS, SPACING, TYPOGRAPHY } from '@/theme';
@@ -85,7 +85,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   const isLoading = selectedType ? isLoadingType : isLoadingList;
   const isFetching = selectedType ? isFetchingType : isFetchingList;
   const error = selectedType ? typeError : listError;
-  const pokemonListData_temp = selectedType ? null : pokemonListData;
+  const pokemonListDataRef = selectedType ? null : pokemonListData;
+
+  // Track if we've reached end of pagination
+  const hasMoreData = pokemonListDataRef?.next !== null && pokemonListDataRef?.next !== undefined;
 
   // Handle new data from API - List view
   React.useEffect(() => {
@@ -153,15 +156,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
       return;
     }
 
+    // Only load more if:
+    // 1. Not already loading
+    // 2. There's a next page (hasMoreData)
+    // 3. Total loaded is less than total count
     if (
       !isLoadingList &&
       !isFetchingList &&
-      pokemonListData_temp?.next &&
-      allPokemon.length < pokemonListData_temp.count
+      hasMoreData &&
+      allPokemon.length < (pokemonListDataRef?.count || 0)
     ) {
       setOffset((prev) => prev + PAGINATION.DEFAULT_LIMIT);
     }
-  }, [isLoadingList, isFetchingList, pokemonListData_temp, allPokemon.length, selectedType]);
+  }, [isLoadingList, isFetchingList, hasMoreData, allPokemon.length, pokemonListDataRef?.count, selectedType]);
 
   // Clear search
   const handleClearSearch = useCallback(() => {
@@ -263,25 +270,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             </>
           )}
           Showing {filteredPokemon.length} Pokemon
-          {!selectedType && pokemonListData_temp?.count
-            ? ` of ${pokemonListData_temp.count}`
-            : selectedType && pokemonTypeData?.pokemon
-              ? ` of ${pokemonTypeData.pokemon.length}`
-              : ''}
+          {!selectedType && pokemonListDataRef?.count
+            ? ` of ${pokemonListDataRef.count}`
+            : null}
         </Text>
       </View>
 
-      {/* Pokemon List */}
       {isLoading && allPokemon.length === 0 ? (
-        <View style={styles.content}>
-          {viewMode === 'grid' ? (
-            <SkeletonGrid count={6} columns={2} />
-          ) : (
-            <SkeletonList count={6} />
-          )}
-        </View>
+        <SkeletonList count={6} />
       ) : (
         <FlatList
+          key={`flatlist-${viewMode}`}
           data={filteredPokemon}
           renderItem={renderItem}
           keyExtractor={(item) => `${item.id}`}
@@ -292,7 +291,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           onEndReachedThreshold={0.5}
           contentContainerStyle={styles.content}
           columnWrapperStyle={
-            viewMode === 'grid' ? { gap: SPACING.md } : undefined
+            viewMode === 'grid' ? { gap: SPACING.md, backgroundColor: 'green' } : undefined
           }
           refreshControl={
             <RefreshControl

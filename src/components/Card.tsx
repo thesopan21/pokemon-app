@@ -5,12 +5,12 @@
 
 import { BORDER_RADIUS, COLORS, SHADOWS, SPACING } from '@/theme';
 import React, { ReactNode } from 'react';
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 export interface CardProps {
   children: ReactNode;
   onPress?: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   elevation?: 'sm' | 'md' | 'lg' | 'xl';
   padding?: 'sm' | 'md' | 'lg';
   backgroundColor?: string;

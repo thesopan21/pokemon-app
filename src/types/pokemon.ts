@@ -23,83 +23,6 @@ export interface PokemonResult {
 // Pokemon Detail Types
 // ============================================================================
 
-export interface Pokemon {
-  id: number;
-  name: string;
-  base_experience: number;
-  height: number;
-  weight: number;
-  is_default: boolean;
-  order: number;
-  species: {
-    name: string;
-    url: string;
-  };
-  stats: PokemonStat[];
-  types: PokemonType[];
-  abilities: PokemonAbility[];
-  forms: Array<{
-    name: string;
-    url: string;
-  }>;
-  moves: Array<{
-    move: {
-      name: string;
-      url: string;
-    };
-    version_group_details: Array<{
-      level_learned_at: number;
-      version_group: {
-        name: string;
-        url: string;
-      };
-      move_learn_method: {
-        name: string;
-        url: string;
-      };
-    }>;
-  }>;
-  sprites: PokemonSprites;
-  held_items: Array<{
-    item: {
-      name: string;
-      url: string;
-    };
-    version_details: Array<{
-      rarity: number;
-      version: {
-        name: string;
-        url: string;
-      };
-    }>;
-  }>;
-}
-
-export interface PokemonSprites {
-  front_default: string | null;
-  front_shiny: string | null;
-  back_default: string | null;
-  back_shiny: string | null;
-  other?: {
-    dream_world?: {
-      front_default?: string;
-      front_female?: string;
-    };
-    'official-artwork'?: {
-      front_default?: string;
-      front_shiny?: string;
-    };
-  };
-}
-
-export interface PokemonStat {
-  base_stat: number;
-  effort: number;
-  stat: {
-    name: string;
-    url: string;
-  };
-}
 
 export interface PokemonType {
   slot: number;
@@ -145,6 +68,46 @@ export interface PokemonTypeDetail {
     no_damage_from: Array<{ name: string; url: string }>;
     no_damage_to: Array<{ name: string; url: string }>;
   };
+  game_indices: Array<{
+    game_index: number;
+    generation: {
+      name: string;
+      url: string;
+    };
+  }>;
+  generation: {
+    name: string;
+    url: string;
+  };
+  move_damage_class: {
+    name: string;
+    url: string;
+  };
+  moves: Array<{
+    name: string;
+    url: string;
+  }>;
+  names: Array<{
+    language: {
+      name: string;
+      url: string;
+    };
+    name: string;
+  }>;
+  past_damage_relations: Array<{
+    damage_relations: {
+      double_damage_from: Array<{ name: string; url: string }>;
+      double_damage_to: Array<{ name: string; url: string }>;
+      half_damage_from: Array<{ name: string; url: string }>;
+      half_damage_to: Array<{ name: string; url: string }>;
+      no_damage_from: Array<{ name: string; url: string }>;
+      no_damage_to: Array<{ name: string; url: string }>;
+    };
+    generation: {
+      name: string;
+      url: string;
+    };
+  }>;
   pokemon: Array<{
     pokemon: {
       name: string;
@@ -152,6 +115,14 @@ export interface PokemonTypeDetail {
     };
     slot: number;
   }>;
+  sprites: {
+    [generation: string]: {
+      [game: string]: {
+        name_icon: string | null;
+        symbol_icon: string | null;
+      };
+    };
+  };
 }
 
 // ============================================================================
@@ -178,6 +149,80 @@ export interface FilterState {
   types: TypeResult[];
   selectedType: string | null; // "all" or specific type
   isOpen: boolean;
+}
+
+// ============================================================================
+// Pokemon Detail Object Type
+// ============================================================================
+
+export interface Pokemon {
+  id: number;
+  name: string;
+  base_experience: number;
+  height: number;
+  weight: number;
+  is_default: boolean;
+  order: number;
+  sprites: {
+    front_default: string | null;
+    back_default: string | null;
+    front_shiny: string | null;
+    back_shiny: string | null;
+    front_female: string | null;
+    back_female: string | null;
+    front_shiny_female: string | null;
+    back_shiny_female: string | null;
+    other?: {
+      dream_world?: {
+        front_default: string | null;
+        front_female: string | null;
+      };
+      'official-artwork'?: {
+        front_default: string | null;
+        front_shiny: string | null;
+      };
+    };
+  };
+  types: PokemonType[];
+  abilities: PokemonAbility[];
+  stats: Array<{
+    base_stat: number;
+    effort: number;
+    stat: {
+      name: string;
+      url: string;
+    };
+  }>;
+  moves: Array<{
+    move: {
+      name: string;
+      url: string;
+    };
+    version_group_details: Array<{
+      level_learned_at: number;
+      version_group: {
+        name: string;
+        url: string;
+      };
+      move_learn_method: {
+        name: string;
+        url: string;
+      };
+    }>;
+  }>;
+  held_items: Array<{
+    item: {
+      name: string;
+      url: string;
+    };
+    version_details: Array<{
+      version: {
+        name: string;
+        url: string;
+      };
+      rarity: number;
+    }>;
+  }>;
 }
 
 // ============================================================================

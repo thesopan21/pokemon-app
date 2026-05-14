@@ -4,13 +4,13 @@
  */
 
 import { pokemonApi } from '@/api/baseApi';
-import { configureStore, PreloadedState } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 /**
  * Configure Redux store with all middleware and slices
  */
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     // RTK Query API reducer
     [pokemonApi.reducerPath]: pokemonApi.reducer,
@@ -46,7 +46,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 /**
  * Function to create a new store with preloaded state (useful for testing)
  */
-export function setupStore(preloadedState?: PreloadedState<RootState>) {
+export function setupStore(preloadedState?: ReturnType<typeof store.getState>) {
   return configureStore({
     reducer: {
       [pokemonApi.reducerPath]: pokemonApi.reducer,
@@ -61,4 +61,4 @@ export function setupStore(preloadedState?: PreloadedState<RootState>) {
   });
 }
 
-export default store;
+export { store };

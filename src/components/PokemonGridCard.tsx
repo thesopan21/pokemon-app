@@ -26,7 +26,6 @@ export interface PokemonGridCardProps {
 const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
   ({ pokemon, onPress, style }, ref) => {
     const styles = createStyles();
-    const imageUrl = getPokemonImageUrl(pokemon as Pokemon);
 
     return (
       <Card
@@ -40,15 +39,11 @@ const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
         <View style={styles.container}>
           {/* Pokemon Image */}
           <View style={styles.imageContainer}>
-            {imageUrl ? (
-              <Image
-                source={{ uri: imageUrl }}
-                style={styles.image}
-                resizeMode="contain"
-              />
-            ) : (
-              <View style={[styles.image, styles.imagePlaceholder]} />
-            )}
+            <Image
+              source={{ uri: getPokemonImageUrl(pokemon as any) }}
+              style={styles.image}
+              resizeMode="contain"
+            />
           </View>
 
           {/* Pokemon ID Badge */}
@@ -64,7 +59,7 @@ const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
           {/* Pokemon Types */}
           <View style={styles.typesContainer}>
             {pokemon.types && pokemon.types.length > 0
-              ? pokemon.types.slice(0, 2).map((typeObj, index) => (
+              ? pokemon.types.slice(0, 2).map((typeObj: any, index: number) => (
                 <TypeBadge
                   key={index}
                   type={typeObj.type.name}

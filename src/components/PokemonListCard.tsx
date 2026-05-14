@@ -69,7 +69,7 @@ const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
             {/* Types */}
             <View style={styles.typesContainer}>
               {pokemon.types && pokemon.types.length > 0
-                ? pokemon.types.map((typeObj, index) => (
+                ? pokemon.types.map((typeObj: any, index: number) => (
                   <TypeBadge
                     key={index}
                     type={typeObj.type.name}
@@ -119,8 +119,9 @@ PokemonListCard.displayName = 'PokemonListCard';
 const createStyles = () =>
   StyleSheet.create({
     card: {
-      backgroundColor: COLORS.white,
+      backgroundColor: COLORS.primary,
       marginBottom: SPACING.md,
+
     },
     container: {
       flexDirection: 'row',
