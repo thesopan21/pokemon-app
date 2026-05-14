@@ -9,7 +9,6 @@ import { PokemonGridCard, PokemonListCard, SearchInput, Skeleton } from '@/compo
 import { PAGINATION } from '@/constants/config';
 import { useDebounce } from '@/hooks';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
-import { Pokemon } from '@/types/pokemon';
 import { getPokemonIdFromUrl } from '@/utils/pokemon';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -260,8 +259,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Determine number of columns based on view mode
   const numColumns = viewMode === 'grid' ? 2 : 1;
-
-  console.log('HomeScreen rendered with:', filteredPokemon)
 
   return (
     <SafeAreaView style={styles.container}>
