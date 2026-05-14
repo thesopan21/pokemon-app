@@ -5,10 +5,10 @@
 
 import { useGetPokemonByTypeQuery } from '@/api/pokemonByTypeSlice';
 import { useGetPokemonListQuery } from '@/api/pokemonListSlice';
-import { PokemonGridCard, PokemonListCard, SearchInput, SkeletonList } from '@/components';
+import { PokemonGridCard, PokemonListCard, SearchInput, Skeleton } from '@/components';
 import { PAGINATION } from '@/constants/config';
 import { useDebounce } from '@/hooks';
-import { COLORS, SPACING, TYPOGRAPHY } from '@/theme';
+import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
 import { getPokemonIdFromUrl } from '@/utils/pokemon';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -29,8 +29,8 @@ export interface HomeScreenProps {
   selectedType?: string | null;
 }
 
-// Pokemon representation for list view (minimal data)
-interface ListPokemon extends Partial<Pokemon> {
+// Pokemon list item (after transformation - id extracted from URL)
+interface ListPokemon {
   id: number;
   name: string;
   url: string;
@@ -53,6 +53,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   // Pagination state
   const [offset, setOffset] = useState<number>(PAGINATION.INITIAL_OFFSET);
   const [allPokemon, setAllPokemon] = useState<ListPokemon[]>([]);
+  const lastProcessedOffsetRef = React.useRef<number>(-1);
 
   // API calls - Pokemon list (default)
   const {
@@ -101,15 +102,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         url: result.url,
       }));
 
-      if (offset === 0) {
-        // Reset on first page
-        setAllPokemon(convertedResults);
-      } else {
-        // Append new results
-        setAllPokemon((prev) => [...prev, ...convertedResults]);
+      // Prevent duplicate processing: only update if we haven't processed this offset yet
+      if (lastProcessedOffsetRef.current !== offset) {
+        lastProcessedOffsetRef.current = offset;
+
+        if (offset === 0) {
+          // Reset on first page
+          setAllPokemon(convertedResults);
+        } else {
+          // Append new results only if first item isn't already in the list
+          setAllPokemon((prev) => {
+            const firstNewId = convertedResults[0]?.url;
+            const isAlreadyAdded = prev.some((p) => p.url === firstNewId);
+            return isAlreadyAdded ? prev : [...prev, ...convertedResults];
+          });
+        }
       }
     }
-  }, [pokemonListData, offset, selectedType]);
+  }, [pokemonListData, selectedType]);
 
   // Handle new data from API - Type view
   React.useEffect(() => {
@@ -126,8 +136,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     }
   }, [pokemonTypeData, selectedType]);
 
-  // Filter Pokemon based on search query
+  // Filter Pokemon based on search query (with skeleton items during initial load)
   const filteredPokemon = useMemo(() => {
+    // Show skeleton items during initial load
+    if (isLoading && allPokemon.length === 0) {
+      return Array.from({ length: 6 }).map((_, index) => ({
+        id: -index - 1, // Use negative IDs for skeletons to avoid conflicts
+        name: '',
+        url: '',
+        isSkeleton: true,
+      } as any));
+    }
+
     if (!debouncedSearchQuery.trim()) {
       return allPokemon;
     }
@@ -138,7 +158,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         pokemon.name.toLowerCase().includes(lowerQuery) ||
         pokemon.id.toString().includes(lowerQuery)
     );
-  }, [allPokemon, debouncedSearchQuery]);
+  }, [allPokemon, debouncedSearchQuery, isLoading]);
 
   // Handle pull to refresh
   const handleRefresh = useCallback(async () => {
@@ -194,9 +214,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     );
   };
 
-  // Render footer with loading indicator
+  // Render footer with loading indicator (only for pagination loading)
   const renderFooter = () => {
-    if (!isFetching) return null;
+    // Don't show footer during initial load - skeleton items are in the data
+    if (!isFetching || (isLoading && allPokemon.length === 0)) {
+      return null;
+    }
+
     return (
       <View style={styles.footerContainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />
@@ -206,6 +230,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Render Pokemon item
   const renderItem = ({ item }: { item: ListPokemon }) => {
+    // Handle skeleton loading state
+    if ((item as any).isSkeleton) {
+      return (
+        <View style={styles.gridItem}>
+          <Skeleton width="100%" height={180} borderRadius={BORDER_RADIUS.lg} />
+        </View>
+      );
+    }
+
     if (viewMode === 'grid') {
       return (
         <View style={styles.gridItem}>
@@ -227,6 +260,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Determine number of columns based on view mode
   const numColumns = viewMode === 'grid' ? 2 : 1;
+
+  console.log('HomeScreen rendered with:', filteredPokemon)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -278,36 +313,31 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         </Text>
       </View>
 
-      {isLoading && allPokemon.length === 0 ? (
-        <SkeletonList count={6} />
-      ) : (
-        <FlatList
-          key={`flatlist-${viewMode}`}
-          data={filteredPokemon}
-          renderItem={renderItem}
-          keyExtractor={(item) => `${item.id}`}
-          numColumns={numColumns}
-          ListEmptyComponent={renderEmpty}
-          ListFooterComponent={renderFooter}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          contentContainerStyle={styles.content}
-          columnWrapperStyle={
-            viewMode === 'grid' ? { gap: SPACING.lg, marginBottom: SPACING.lg } : undefined
-          }
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={handleRefresh}
-              tintColor={COLORS.primary}
-            />
-          }
-          scrollEnabled={true}
-          removeClippedSubviews={true}
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={50}
-        />
-      )}
+      <FlatList
+        data={filteredPokemon}
+        renderItem={renderItem}
+        keyExtractor={(item) => (item as any).isSkeleton ? `skeleton-${item.id}` : item.url}
+        numColumns={numColumns}
+        ListEmptyComponent={renderEmpty}
+        ListFooterComponent={renderFooter}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        contentContainerStyle={styles.content}
+        columnWrapperStyle={
+          viewMode === 'grid' ? { gap: SPACING.lg, marginBottom: SPACING.lg } : undefined
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={handleRefresh}
+            tintColor={COLORS.primary}
+          />
+        }
+        scrollEnabled={true}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+      />
 
       {/* Error state */}
       {error && (
