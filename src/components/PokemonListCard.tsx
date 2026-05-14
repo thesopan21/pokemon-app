@@ -18,20 +18,20 @@ import {
 } from 'react-native';
 
 export interface PokemonListCardProps {
-  pokemon: Pokemon;
-  onPress: (pokemon: Pokemon) => void;
+  pokemon: Partial<Pokemon> & { id: number; name: string };
+  onPress: (pokemonId: number) => void;
   style?: ViewStyle;
 }
 
 const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
   ({ pokemon, onPress, style }, ref) => {
     const styles = createStyles();
-    const imageUrl = getPokemonImageUrl(pokemon);
+    const imageUrl = getPokemonImageUrl(pokemon as Pokemon);
 
     return (
       <Card
         ref={ref}
-        onPress={() => onPress(pokemon)}
+        onPress={() => onPress(pokemon.id)}
         padding="md"
         elevation="sm"
         style={[styles.card, style]}

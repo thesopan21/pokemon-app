@@ -24,19 +24,16 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export interface HomeScreenProps {
-  onPokemonPress: (pokemon: Pokemon) => void;
+  onPokemonPress: (pokemonId: string | number) => void;
   onFilterPress: () => void;
   selectedType?: string | null;
 }
 
 // Pokemon representation for list view (minimal data)
-interface ListPokemon {
+interface ListPokemon extends Partial<Pokemon> {
   id: number;
   name: string;
   url: string;
-  types?: { type: { name: string } }[];
-  sprites?: { front_default: string };
-  stats?: any[];
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -64,12 +61,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     isFetching: isFetchingList,
     error: listError,
     refetch: refetchList,
-  } = useGetPokemonListQuery({
-    limit: PAGINATION.DEFAULT_LIMIT,
-    offset,
-  }, {
-    skip: !!selectedType, // Skip when type is selected
-  });
+  } = useGetPokemonListQuery(
+    {
+      limit: PAGINATION.DEFAULT_LIMIT,
+      offset,
+    },
+    {
+      skip: !!selectedType, // Skip when type is selected
+    }
+  );
 
   // API calls - Pokemon by type (when filter is active)
   const {
@@ -197,12 +197,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Render Pokemon item
   const renderItem = ({ item }: { item: ListPokemon }) => {
-    const pokemon = item as unknown as Pokemon;
     if (viewMode === 'grid') {
       return (
         <View style={styles.gridItem}>
           <PokemonGridCard
-            pokemon={pokemon}
+            pokemon={item}
             onPress={onPokemonPress}
           />
         </View>
@@ -211,7 +210,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
     return (
       <PokemonListCard
-        pokemon={pokemon}
+        pokemon={item}
         onPress={onPokemonPress}
       />
     );
@@ -287,7 +286,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           renderItem={renderItem}
           keyExtractor={(item) => `${item.id}`}
           numColumns={numColumns}
-          key={`flatlist-${viewMode}`}
           ListEmptyComponent={renderEmpty}
           ListFooterComponent={renderFooter}
           onEndReached={handleLoadMore}

@@ -55,27 +55,21 @@ export const pokemonListApi = pokemonApi.injectEndpoints({
           signal: controller.signal,
         };
       },
-      // Merge pagination results
-      merge: (currentCache, newData, { arg }) => {
-        if (arg.offset === 0) {
-          // Reset cache when offset is 0 (first page)
-          return newData;
+      // Cache list data for 10 minutes (600 seconds)
+      keepUnusedDataFor: 10 * 60,
+      providesTags: (result, error, arg) => {
+        // Create a tag for each pokemon in the result
+        if (result?.results) {
+          return [
+            { type: 'Pokemon', id: 'LIST' },
+            ...result.results.map((pokemon) => ({
+              type: 'Pokemon' as const,
+              id: pokemon.name,
+            })),
+          ];
         }
-        // Append new results to existing cache
-        return {
-          ...newData,
-          results: [...(currentCache?.results || []), ...newData.results],
-        };
+        return [{ type: 'Pokemon', id: 'LIST' }];
       },
-      // Keep previous data while fetching new data
-      serializeQueryArgs: ({ endpointName, queryArgs }) => {
-        return { endpointName, queryArgs: { limit: queryArgs.limit } };
-      },
-      // Keep cache data while fetching
-      forceRefetch({ currentCacheStatus, endpointName }) {
-        return currentCacheStatus === 'uninitialized';
-      },
-      providesTags: ['Pokemon'],
     }),
 
     /**
@@ -99,7 +93,7 @@ export const pokemonListApi = pokemonApi.injectEndpoints({
 /**
  * Export hooks for use in components
  */
-export const { useGetPokemonListQuery, useGetPokemonListQueryState } = pokemonListApi;
+export const { useGetPokemonListQuery } = pokemonListApi;
 
 /**
  * Export API for manual queries

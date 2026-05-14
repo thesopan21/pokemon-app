@@ -5,23 +5,19 @@
 
 import { FilterScreen, HomeScreen, PokemonDetailScreen } from '@/screens';
 import { COLORS } from '@/theme';
-import { Pokemon } from '@/types/pokemon';
-import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 
 export default function Index() {
-  const router = useRouter();
-
   // Modal states
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+  const [selectedPokemonId, setSelectedPokemonId] = useState<string | number | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   // Handle Pokemon card press
-  const handlePokemonPress = (pokemon: Pokemon) => {
-    setSelectedPokemon(pokemon);
+  const handlePokemonPress = (pokemonId: string | number) => {
+    setSelectedPokemonId(pokemonId);
     setShowDetailModal(true);
   };
 
@@ -34,7 +30,7 @@ export default function Index() {
   // Handle close detail modal
   const handleCloseDetail = () => {
     setShowDetailModal(false);
-    setSelectedPokemon(null);
+    setSelectedPokemonId(null);
   };
 
   // Handle close filter modal
@@ -72,9 +68,9 @@ export default function Index() {
         transparent={false}
         onRequestClose={handleCloseDetail}
       >
-        {selectedPokemon && (
+        {selectedPokemonId && (
           <PokemonDetailScreen
-            pokemonId={selectedPokemon.id}
+            pokemonId={selectedPokemonId}
             onClose={handleCloseDetail}
           />
         )}
