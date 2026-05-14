@@ -94,7 +94,7 @@ const createStyles = () =>
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: 140,
-      backgroundColor: COLORS.surfaceSecondary,
+      backgroundColor: COLORS.white,
       borderRadius: BORDER_RADIUS.md,
       marginBottom: SPACING.lg,
     },

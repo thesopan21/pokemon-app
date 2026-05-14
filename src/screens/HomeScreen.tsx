@@ -311,6 +311,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
       </View>
 
       <FlatList
+        key={`flatlist-${viewMode}`}
         data={filteredPokemon}
         renderItem={renderItem}
         keyExtractor={(item) => (item as any).isSkeleton ? `skeleton-${item.id}` : item.url}

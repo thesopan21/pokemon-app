@@ -119,7 +119,6 @@ PokemonListCard.displayName = 'PokemonListCard';
 const createStyles = () =>
   StyleSheet.create({
     card: {
-      backgroundColor: COLORS.primary,
       marginBottom: SPACING.md,
 
     },
@@ -132,7 +131,7 @@ const createStyles = () =>
       height: 80,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: COLORS.surfaceSecondary,
+      backgroundColor: COLORS.white,
       borderRadius: BORDER_RADIUS.md,
       marginRight: SPACING.md,
       marginBottom: 0,
