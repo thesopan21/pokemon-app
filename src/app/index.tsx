@@ -48,6 +48,7 @@ export default function Index() {
       <HomeScreen
         onPokemonPress={handlePokemonPress}
         onFilterPress={() => setShowFilterModal(true)}
+        selectedType={selectedType}
       />
 
       {/* Filter Modal */}

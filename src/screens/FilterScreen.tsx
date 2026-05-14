@@ -10,13 +10,13 @@ import { TypeResult } from '@/types/pokemon';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   ViewStyle
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export interface FilterScreenProps {
   selectedType: string | null;

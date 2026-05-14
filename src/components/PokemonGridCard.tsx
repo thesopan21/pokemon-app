@@ -3,7 +3,8 @@
  * Displays a single Pokemon in grid view with image, name, and types
  */
 
-import { Card, TypeBadge } from '@/components';
+import Card from '@/components/Card';
+import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
 import { capitalize, getPokemonImageUrl } from '@/utils/pokemon';
@@ -39,16 +40,20 @@ const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
         <View style={styles.container}>
           {/* Pokemon Image */}
           <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: imageUrl }}
-              style={styles.image}
-              resizeMode="contain"
-            />
+            {imageUrl ? (
+              <Image
+                source={{ uri: imageUrl }}
+                style={styles.image}
+                resizeMode="contain"
+              />
+            ) : (
+              <View style={[styles.image, styles.imagePlaceholder]} />
+            )}
           </View>
 
           {/* Pokemon ID Badge */}
           <View style={styles.idBadge}>
-            <Text style={styles.idText}>#{pokemon.id.toString().padStart(3, '0')}</Text>
+            <Text style={styles.idText}>#{pokemon.id ? pokemon.id.toString().padStart(3, '0') : '???'}</Text>
           </View>
 
           {/* Pokemon Name */}
@@ -58,14 +63,16 @@ const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
 
           {/* Pokemon Types */}
           <View style={styles.typesContainer}>
-            {pokemon.types.slice(0, 2).map((typeObj, index) => (
-              <TypeBadge
-                key={index}
-                type={typeObj.type.name}
-                size="sm"
-                style={styles.type}
-              />
-            ))}
+            {pokemon.types && pokemon.types.length > 0
+              ? pokemon.types.slice(0, 2).map((typeObj, index) => (
+                <TypeBadge
+                  key={index}
+                  type={typeObj.type.name}
+                  size="sm"
+                  style={styles.type}
+                />
+              ))
+              : null}
           </View>
         </View>
       </Card>
@@ -97,6 +104,9 @@ const createStyles = () =>
     image: {
       width: '80%',
       height: '80%',
+    },
+    imagePlaceholder: {
+      backgroundColor: COLORS.border,
     },
     idBadge: {
       position: 'absolute',

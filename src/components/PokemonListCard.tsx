@@ -3,7 +3,8 @@
  * Displays a single Pokemon in list view with details
  */
 
-import { Card, TypeBadge } from '@/components';
+import Card from '@/components/Card';
+import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
 import { capitalize, getPokemonImageUrl } from '@/utils/pokemon';
@@ -39,11 +40,15 @@ const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
         <View style={styles.container}>
           {/* Pokemon Image */}
           <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: imageUrl }}
-              style={styles.image}
-              resizeMode="contain"
-            />
+            {imageUrl ? (
+              <Image
+                source={{ uri: imageUrl }}
+                style={styles.image}
+                resizeMode="contain"
+              />
+            ) : (
+              <View style={[styles.image, styles.imagePlaceholder]} />
+            )}
           </View>
 
           {/* Pokemon Info */}
@@ -51,7 +56,7 @@ const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
             {/* ID and Name */}
             <View style={styles.headerContainer}>
               <View>
-                <Text style={styles.id}>#{pokemon.id.toString().padStart(3, '0')}</Text>
+                <Text style={styles.id}>#{pokemon.id ? pokemon.id.toString().padStart(3, '0') : '???'}</Text>
                 <Text style={styles.name} numberOfLines={1}>
                   {capitalize(pokemon.name)}
                 </Text>
@@ -63,14 +68,16 @@ const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
 
             {/* Types */}
             <View style={styles.typesContainer}>
-              {pokemon.types.map((typeObj, index) => (
-                <TypeBadge
-                  key={index}
-                  type={typeObj.type.name}
-                  size="sm"
-                  style={styles.type}
-                />
-              ))}
+              {pokemon.types && pokemon.types.length > 0
+                ? pokemon.types.map((typeObj, index) => (
+                  <TypeBadge
+                    key={index}
+                    type={typeObj.type.name}
+                    size="sm"
+                    style={styles.type}
+                  />
+                ))
+                : null}
             </View>
 
             {/* Stats Preview */}
@@ -78,25 +85,25 @@ const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>HP</Text>
                 <Text style={styles.statValue}>
-                  {pokemon.stats[0]?.base_stat || 0}
+                  {pokemon.stats && pokemon.stats[0]?.base_stat || 0}
                 </Text>
               </View>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>ATK</Text>
                 <Text style={styles.statValue}>
-                  {pokemon.stats[1]?.base_stat || 0}
+                  {pokemon.stats && pokemon.stats[1]?.base_stat || 0}
                 </Text>
               </View>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>DEF</Text>
                 <Text style={styles.statValue}>
-                  {pokemon.stats[2]?.base_stat || 0}
+                  {pokemon.stats && pokemon.stats[2]?.base_stat || 0}
                 </Text>
               </View>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>SPD</Text>
                 <Text style={styles.statValue}>
-                  {pokemon.stats[5]?.base_stat || 0}
+                  {pokemon.stats && pokemon.stats[5]?.base_stat || 0}
                 </Text>
               </View>
             </View>
@@ -132,6 +139,9 @@ const createStyles = () =>
     image: {
       width: '100%',
       height: '100%',
+    },
+    imagePlaceholder: {
+      backgroundColor: COLORS.border,
     },
     infoContainer: {
       flex: 1,

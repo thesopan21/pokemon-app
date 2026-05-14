@@ -123,7 +123,7 @@ export const SkeletonGrid = React.forwardRef<View, SkeletonGridProps>(
       >
         {Array.from({ length: count }).map((_, index) => (
           <View
-            key={index}
+            key={`skeleton-grid-${index}`}
             style={{
               flex: 1 / columns,
               maxWidth: `${100 / columns}%`,
@@ -174,7 +174,7 @@ export const SkeletonList = React.forwardRef<View, SkeletonListProps>(
       >
         {Array.from({ length: count }).map((_, index) => (
           <View
-            key={index}
+            key={`skeleton-list-${index}`}
             style={{
               marginBottom: gap,
             }}

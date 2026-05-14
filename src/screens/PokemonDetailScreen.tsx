@@ -4,7 +4,8 @@
  */
 
 import { useGetPokemonDetailQuery } from '@/api/pokemonDetailSlice';
-import { Card, TypeBadge } from '@/components';
+import Card from '@/components/Card';
+import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import {
   capitalize,
@@ -20,13 +21,13 @@ import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   Image,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export interface PokemonDetailScreenProps {
   pokemonId: string | number;
