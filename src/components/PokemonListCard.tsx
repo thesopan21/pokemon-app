@@ -7,7 +7,7 @@ import Card from '@/components/Card';
 import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
-import { capitalize, getPokemonImageUrl } from '@/utils/pokemon';
+import { capitalize, getPokemonImageUrlById } from '@/utils/pokemon';
 import React from 'react';
 import {
   Image,
@@ -26,7 +26,7 @@ export interface PokemonListCardProps {
 const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
   ({ pokemon, onPress, style }, ref) => {
     const styles = createStyles();
-    const imageUrl = getPokemonImageUrl(pokemon as Pokemon);
+    const imageUrl = getPokemonImageUrlById(pokemon.id);
 
     return (
       <Card

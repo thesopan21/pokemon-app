@@ -23,14 +23,6 @@ const baseQuery = fetchBaseQuery({
  */
 const baseQueryWithErrorHandling = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
-
-  if (result.error) {
-    console.error('API Error:', {
-      status: result.error.status,
-      data: result.error.data,
-    });
-  }
-
   return result;
 };
 

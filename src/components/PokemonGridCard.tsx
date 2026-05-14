@@ -7,7 +7,7 @@ import Card from '@/components/Card';
 import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
-import { capitalize, getPokemonImageUrl } from '@/utils/pokemon';
+import { capitalize, getPokemonImageUrlById } from '@/utils/pokemon';
 import React from 'react';
 import {
   Image,
@@ -40,7 +40,7 @@ const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
           {/* Pokemon Image */}
           <View style={styles.imageContainer}>
             <Image
-              source={{ uri: getPokemonImageUrl(pokemon as any) }}
+              source={{ uri: getPokemonImageUrlById(pokemon.id) }}
               style={styles.image}
               resizeMode="contain"
             />
@@ -81,36 +81,38 @@ const createStyles = () =>
   StyleSheet.create({
     card: {
       flex: 1,
-      minHeight: 200,
+      minHeight: 240,
       backgroundColor: COLORS.white,
+      borderRadius: BORDER_RADIUS.lg,
     },
     container: {
       flex: 1,
+      padding: SPACING.md,
     },
     imageContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      minHeight: 120,
+      minHeight: 140,
       backgroundColor: COLORS.surfaceSecondary,
       borderRadius: BORDER_RADIUS.md,
-      marginBottom: SPACING.md,
+      marginBottom: SPACING.lg,
     },
     image: {
-      width: '80%',
-      height: '80%',
+      width: '85%',
+      height: '85%',
     },
     imagePlaceholder: {
       backgroundColor: COLORS.border,
     },
     idBadge: {
       position: 'absolute',
-      top: SPACING.md,
-      right: SPACING.md,
+      top: SPACING.lg,
+      right: SPACING.lg,
       backgroundColor: COLORS.primary,
-      paddingHorizontal: SPACING.md,
+      paddingHorizontal: SPACING.sm,
       paddingVertical: SPACING.xs,
-      borderRadius: BORDER_RADIUS.md,
+      borderRadius: BORDER_RADIUS.sm,
     },
     idText: {
       fontSize: TYPOGRAPHY.fontSize.xs,
@@ -121,12 +123,12 @@ const createStyles = () =>
       fontSize: TYPOGRAPHY.fontSize.lg,
       fontWeight: TYPOGRAPHY.fontWeight.bold,
       color: COLORS.text,
-      marginBottom: SPACING.sm,
+      marginBottom: SPACING.md,
     },
     typesContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: SPACING.xs,
+      gap: SPACING.sm,
     },
     type: {
       marginRight: SPACING.xs,

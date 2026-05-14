@@ -71,6 +71,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     }
   );
 
+
+
   // API calls - Pokemon by type (when filter is active)
   const {
     data: pokemonTypeData,
@@ -291,7 +293,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           onEndReachedThreshold={0.5}
           contentContainerStyle={styles.content}
           columnWrapperStyle={
-            viewMode === 'grid' ? { gap: SPACING.md, backgroundColor: 'green' } : undefined
+            viewMode === 'grid' ? { gap: SPACING.lg, marginBottom: SPACING.lg } : undefined
           }
           refreshControl={
             <RefreshControl
@@ -330,14 +332,13 @@ const createStyles = () =>
     header: {
       backgroundColor: COLORS.white,
       paddingHorizontal: SPACING.lg,
-      paddingVertical: SPACING.md,
-      borderBottomWidth: 1,
-      borderBottomColor: COLORS.border,
+      paddingVertical: SPACING.lg,
+      borderBottomWidth: 0,
     },
     headerActions: {
       flexDirection: 'row',
       gap: SPACING.md,
-      marginTop: SPACING.md,
+      marginTop: SPACING.lg,
     },
     searchInput: {
       flex: 1,
@@ -371,9 +372,8 @@ const createStyles = () =>
     resultInfo: {
       backgroundColor: COLORS.white,
       paddingHorizontal: SPACING.lg,
-      paddingVertical: SPACING.sm,
-      borderBottomWidth: 1,
-      borderBottomColor: COLORS.border,
+      paddingVertical: SPACING.md,
+      borderBottomWidth: 0,
     },
     resultCount: {
       fontSize: TYPOGRAPHY.fontSize.sm,
@@ -390,7 +390,7 @@ const createStyles = () =>
     },
     content: {
       paddingHorizontal: SPACING.lg,
-      paddingVertical: SPACING.md,
+      paddingVertical: SPACING.lg,
     },
     gridItem: {
       flex: 1,

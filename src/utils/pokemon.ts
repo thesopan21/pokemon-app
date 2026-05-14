@@ -21,6 +21,14 @@ export const getPokemonImageUrl = (pokemon: Pokemon | null): string => {
 };
 
 /**
+ * Get Pokemon image URL directly from ID (for list views without full sprites data)
+ */
+export const getPokemonImageUrlById = (pokemonId: number | string): string => {
+  if (!pokemonId) return '';
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
+};
+
+/**
  * Extract Pokemon ID from URL
  */
 export const getPokemonIdFromUrl = (url: string): number => {
