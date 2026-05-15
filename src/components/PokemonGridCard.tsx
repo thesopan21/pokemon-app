@@ -8,9 +8,9 @@ import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
 import { capitalize, getPokemonImageUrlById } from '@/utils/pokemon';
+import { Image } from 'expo-image';
 import React from 'react';
 import {
-  Image,
   StyleSheet,
   Text,
   View,
@@ -42,7 +42,7 @@ const PokemonGridCard = React.forwardRef<View, PokemonGridCardProps>(
             <Image
               source={{ uri: getPokemonImageUrlById(pokemon.id) }}
               style={styles.image}
-              resizeMode="contain"
+              contentFit="contain"
             />
           </View>
 
@@ -99,8 +99,8 @@ const createStyles = () =>
       marginBottom: SPACING.lg,
     },
     image: {
-      width: '85%',
-      height: '85%',
+      width: '95%',
+      height: '95%',
     },
     imagePlaceholder: {
       backgroundColor: COLORS.border,

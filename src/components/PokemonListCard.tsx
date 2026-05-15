@@ -8,9 +8,9 @@ import TypeBadge from '@/components/TypeBadge';
 import { BORDER_RADIUS, COLORS, SPACING, TYPOGRAPHY } from '@/theme';
 import { Pokemon } from '@/types/pokemon';
 import { capitalize, getPokemonImageUrlById } from '@/utils/pokemon';
+import { Image } from 'expo-image';
 import React from 'react';
 import {
-  Image,
   StyleSheet,
   Text,
   View,
@@ -44,7 +44,7 @@ const PokemonListCard = React.forwardRef<View, PokemonListCardProps>(
               <Image
                 source={{ uri: imageUrl }}
                 style={styles.image}
-                resizeMode="contain"
+                contentFit="contain"
               />
             ) : (
               <View style={[styles.image, styles.imagePlaceholder]} />
